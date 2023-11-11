@@ -1,0 +1,82 @@
+import random
+
+# Constants
+NUM_CATEGORIES = 4
+CATEGORIES = ["Film", "Music", "Sports", "Literature"]
+NUM_SPACES_PER_CATEGORY = [60, 45, 30, 15]
+WINNING_ANSWERS_REQUIRED = 2
+
+# Game Variables
+players = []
+current_player = 0
+question_deck = {
+    "Film": ["Film Question 1", "Film Question 2", ...],
+    "Music": ["Music Question 1", "Music Question 2", ...],
+    "Sports": ["Sports Question 1", "Sports Question 2", ...],
+    "Literature": ["Literature Question 1", "Literature Question 2", ...],
+}
+joker_deck = ["Joker Question 1", "Joker Question 2", ...]
+
+def roll_die():
+    return random.randint(1, 6)
+
+def ask_yes_no_question():
+    # Implement this function to ask a Yes/No question
+    pass
+
+def handle_joker_space():
+    # Implement this function to handle a Joker space
+    pass
+
+def main():
+    global current_player  # Declare current_player as a global variable
+
+    # Initialize players and game board
+    num_players = int(input("Enter the number of players: "))
+    for i in range(num_players):
+        players.append({
+            "name": input(f"Enter Player {i + 1}'s name: "),
+            "category": 0,  # Start in the first category
+            "answers_correct": 0,
+        })
+
+    while True:
+        player = players[current_player]
+        category = CATEGORIES[player["category"]]
+
+        print(f"\n{player['name']}'s Turn")
+        input("Press Enter to roll the die...")
+        die_roll = roll_die()
+        print(f"You rolled a {die_roll}.")
+
+        # Handle Yes/No questions
+        if category == "Yes/No":
+            ask_yes_no_question()
+            continue
+
+        # Handle Joker spaces
+        if category == "Joker":
+            handle_joker_space()
+            continue
+
+        # Ask a category-specific question
+        question = random.choice(question_deck[category])
+        print(f"Category: {category}")
+        print(f"Question: {question}")
+        answer = input("Enter your answer (Yes/No): ").strip().lower()
+
+        if answer == "yes":
+            player["answers_correct"] += 1
+            if player["answers_correct"] >= WINNING_ANSWERS_REQUIRED:
+                print(f"{player['name']} wins the game!")
+                break
+            player["category"] += 1
+        elif answer == "no":
+            player["category"] -= 1
+
+        player["category"] = max(0, min(NUM_CATEGORIES - 1, player["category"]))
+
+        current_player = (current_player + 1) % num_players
+
+if __name__ == "__main__":
+    main()
